@@ -1,0 +1,80 @@
+name: Ruby Gem
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build + Publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.6.x
+
+    - name: Publish to GPR
+      run: |
+        mkdir -p $HOME/.gem
+        touch $HOME/.gem/credentials
+        chmod 0600 $HOME/.gem/credentials
+        printf -- "---\n:github: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        gem build *.gemspec
+        gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
+      env:
+        GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
+        OWNER: ${{ github.repository_owner }}
+
+    - name: Publish to RubyGems
+      run: |
+        mkdir -p $HOME/.gem
+        touch $HOME/.gem/credentials
+        chmod 0600 $HOME/.gem/credentials
+        printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        gem build *.gemspec
+        gem push *.gem
+      env:
+        GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
+        - name: Setup V environment
+  # You may pin to the exact commit or the version.
+  # uses: nocturlab/setup-vlang-action@5cb58a1a4ae31497272bea0547d2df257e208641
+  uses: nocturlab/setup-vlang-action@v1.2.0
+  with:
+    # The V version to download and use.
+    v-version: # optional, default is latest
+- name: Git Version
+  # You may pin to the exact commit or the version.
+  # uses: codacy/git-version@fa06788276d7492a2af01662649696d249ecf4cb
+  uses: codacy/git-version@2.4.0
+  with:
+    # The name of the release branch
+    release-branch: # default is master
+    # The name of the dev branch
+    dev-branch: # default is dev
+    # The prefix to use in the version
+    prefix: # optional
+    # The paths to be used to calculate changes (comma-separated)
+    log-paths: # optional, default is ./
+    - name: Create documentation for V modules
+  # You may pin to the exact commit or the version.
+  # uses: test-room-7/action-create-v-docs@db8ebdd6b2a22398e09ff6c2ea628e032bf3d6dd
+  uses: test-room-7/action-create-v-docs@v0.2.1
+  with:
+    # Directory where documentation will be placed
+    docs-dir: 
+    # Directory where module source files are placed
+    module-dir: # optional, default is .
+    - name: VSIX Version
+  # You may pin to the exact commit or the version.
+  # uses: cezarypiatek/VsixVersionAction@e13662fbae1b62d7cd945def02ed401fc83bd1ca
+  uses: cezarypiatek/VsixVersionAction@1.0
+  with:
+    # New extension version
+    version: 
+    # The path to vsix manifest file
+    vsix-manifest-file: 
