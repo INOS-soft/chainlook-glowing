@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+# pack-refs with: peeled fully-peeled sorted 
+d5824d170fdf67afa7bc09e1cd6b6e297240f6a9 refs/remotes/origin/master
+3e281d76060ec315bf47c11c9e99b3f63e1baa0c refs/remotes/origin/mehcode-patch-1
+=======
+# pack-refs with: peeled fully-peeled sorted 
+ce9eb2f24a93f993f372186fdfe5d85fca39bd3a refs/remotes/origin/main
+>>>>>>> SonjayaJetBrain-patch-1
